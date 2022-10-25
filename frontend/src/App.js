@@ -4,20 +4,23 @@ import HomePage from './components/HomePage/HomePage';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
+import { AuthProvider } from './contexts/AuthContext.jsx';
 
 const App = () => (
   <div className="d-flex flex-column h-100">
-    <Navbar className="shadow-sm navbar navbar-light">
-      <Container className="container">
-        <a className="navbar-brand" href="/">Hexlet Chat</a>
-      </Container>
-    </Navbar>
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    <AuthProvider>
+      <Navbar className="shadow-sm navbar navbar-light">
+        <Container className="container">
+          <a className="navbar-brand" href="/">Hexlet Chat</a>
+        </Container>
+      </Navbar>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </AuthProvider>
   </div>
 );
 

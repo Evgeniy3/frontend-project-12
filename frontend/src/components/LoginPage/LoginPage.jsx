@@ -21,7 +21,7 @@ const LoginPage = () => (
               <span>
                 Нет аккаунта?
               </span>
-              <Link to="/register">Регестрация</Link>
+              <Link to="/signup">Регестрация</Link>
             </div>
           </Card.Footer>
         </Card>

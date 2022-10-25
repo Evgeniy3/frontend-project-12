@@ -4,7 +4,8 @@ import * as yup from 'yup';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import routes from '@hexlet/chat-server/src/routes';
+import routes from '../../routes/routes';
+import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const LoginPage = () => {
   const validateSchema = yup.object().shape({
@@ -12,6 +13,7 @@ const LoginPage = () => {
     password: yup.string().required(),
   });
   const navigate = useNavigate();
+  const authUser = useAuth();
   return (
     <Formik
       initialValues={
@@ -25,7 +27,7 @@ const LoginPage = () => {
         // eslint-disable-next-line no-empty
         try {
           const res = await axios.post(routes.loginPath(), values);
-          console.log(res.data);
+          authUser.logIn(res.data);
           navigate('/');
         } catch (err) {
           console.log(err);

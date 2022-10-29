@@ -6,6 +6,7 @@ import RegisterPage from './components/RegisterPage/RegisterPage';
 import NotFoundPage from './components/NotFoundPage';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 
+// eslint-disable-next-line react-hooks/rules-of-hooks
 const App = () => (
   <div className="d-flex flex-column h-100">
     <AuthProvider>
@@ -17,7 +18,7 @@ const App = () => (
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/signup" element={<RegisterPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AuthProvider>

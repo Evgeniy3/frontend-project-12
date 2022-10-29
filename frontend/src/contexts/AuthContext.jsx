@@ -12,10 +12,30 @@ export const AuthProvider = ({ children }) => {
     setLoggedIn({ username: data.username });
   };
 
+  const logOut = () => {
+    localStorage.removeItem('userId');
+    setLoggedIn(null);
+  };
+
+  const getAuthToken = () => {
+    const currentUser = userLog;
+    if (currentUser && currentUser.token) {
+      return { Authorization: `Basic ${currentUser.token}` };
+    }
+    return {};
+  };
+
+  const getUserName = () => {
+    if (userLog) {
+      return userLog.username;
+    }
+    return null;
+  };
+
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
     <AuthContext.Provider value={{
-      loggedIn, logIn,
+      loggedIn, logIn, logOut, getAuthToken, getUserName, userLog,
     }}
     >
       {children}

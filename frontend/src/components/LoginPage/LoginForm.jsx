@@ -1,4 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import {
+  React,
+} from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -8,9 +11,9 @@ import routes from '../../routes/routes';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const LoginPage = () => {
-  const validateSchema = yup.object().shape({
-    name: yup.string().required(),
-    password: yup.string().required(),
+  const SignupSchema = yup.object().shape({
+    username: yup.string().required('Обязательное поле'),
+    password: yup.string().required('Обязательное поле'),
   });
   const navigate = useNavigate();
   const authUser = useAuth();
@@ -18,19 +21,22 @@ const LoginPage = () => {
     <Formik
       initialValues={
     {
-      name: '',
+      username: '',
       password: '',
     }
 }
-      validate={validateSchema}
+      validationSchema={SignupSchema}
       onSubmit={async (values) => {
         // eslint-disable-next-line no-empty
         try {
           const res = await axios.post(routes.loginPath(), values);
           authUser.logIn(res.data);
+          console.log(res.data);
           navigate('/');
         } catch (err) {
-          console.log(err);
+          if (err.response.status === 401) {
+            console.log(err);
+          }
         }
       }}
     >
@@ -50,6 +56,7 @@ const LoginPage = () => {
               className="form-control"
               type="username"
               name="username"
+              autoComplete="username"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.username}
@@ -63,6 +70,7 @@ const LoginPage = () => {
               className="form-control"
               type="password"
               name="password"
+              autoComplete="username"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.password}

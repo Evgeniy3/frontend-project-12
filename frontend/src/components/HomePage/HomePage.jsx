@@ -1,9 +1,13 @@
-import { Navigate } from 'react-router-dom';
+/* eslint-disable import/no-named-as-default-member */
+import Channels from './Channels';
+import Message from './Messages';
 
 const HomePage = () => (
-  <div>
-    <h1>Дом</h1>
-    <p><Navigate to="/login" /></p>
+  <div className="container h-100 my-4 overflow-hidden rounded shadow">
+    <div className="row h-100 bg-white flex-md-row">
+      <Channels />
+      <Message />
+    </div>
   </div>
 );
 

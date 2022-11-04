@@ -1,31 +1,29 @@
 /* eslint-disable no-undef */
-import { useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import _ from 'lodash';
 import { Button, Modal } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import {
-  selectModalIsOpened, selectTypeCurrentModal, closeModal,
-} from '../../slices/modalSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeModal } from '../../slices/modalSlice';
+import { selectors } from '../../slices/channelsSlice';
+import { useSocket } from '../../contexts/SocketContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const AddModal = () => {
   const dispatch = useDispatch();
-  const typeModal = useSelector(selectTypeCurrentModal);
-  const inputRef = useRef();
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [typeModal]);
-
-  const isOpened = useSelector(selectModalIsOpened);
-  if (!isOpened) return null;
-
-  const ChannelVlidate = yup.object().shape({
+  const auth = useAuth();
+  const soc = useSocket();
+  const [formValid, setFormValid] = useState(true);
+  const allChannels = useSelector((state) => selectors.selectAll(state));
+  const namesChannels = allChannels.map((it) => it.name);
+  const ChannelValidate = yup.object().shape({
     nameChannel: yup
       .string()
       .required('Обязательное поле')
       .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов'),
+      .max(20, 'От 3 до 20 символов')
+      .notOneOf(namesChannels, 'Уникальное имя'),
   });
   return (
     <Formik
@@ -34,13 +32,18 @@ const AddModal = () => {
         nameChannel: '',
       }
   }
-      validationSchema={ChannelVlidate}
+      validationSchema={ChannelValidate}
       onSubmit={async (values) => {
       // eslint-disable-next-line no-empty
         try {
-          handlers[typeModal](values);
-          hideModal();
+          await setFormValid(true);
+          const newChannel = {
+            id: _.uniqueId(), name: values.nameChannel, author: auth.getUserName(), removable: true,
+          };
+          soc.addNewChannel(newChannel);
+          dispatch(closeModal());
         } catch (err) {
+          setFormValid(false);
           console.log(err);
         }
       }}
@@ -61,7 +64,7 @@ const AddModal = () => {
             </Modal.Header>
             <Modal.Body>
               <input
-                className="form-control mb-2"
+                className={formValid ? 'form-control mb-2' : 'form-control is-invalid mb-2'}
                 type="nameChannel"
                 name="nameChannel"
                 onChange={handleChange}
@@ -74,7 +77,7 @@ const AddModal = () => {
                 <Button onClick={() => dispatch(closeModal())} className="me-2" variant="secondary" disabled={isSubmitting}>
                   Отменить
                 </Button>
-                <Button type="submit" variant="primary" disabled={isSubmitting}>
+                <Button onClick={handleSubmit} type="submit" variant="primary" disabled={isSubmitting}>
                   Отправить
                 </Button>
               </div>

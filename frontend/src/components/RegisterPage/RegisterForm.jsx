@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import routes from '../../routes/routes';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
-const LoginForm = () => {
+const RegisterFrom = () => {
   const SignupSchema = yup.object().shape({
-    username: yup.string().required('Обязательное поле'),
-    password: yup.string().required('Обязательное поле'),
+    username: yup.string().required('Обязательное поле').min(3, 'От 3 до 20 символов').max(20, 'От 3 до 20 символов'),
+    password: yup.string().required('Обязательное поле').min(6, 'Не менее 6 символов'),
+    confirmPassword: yup.string().required('Обязательное поле').oneOf([yup.ref('password'), null], 'Пароли должны совпадать'),
   });
   const navigate = useNavigate();
   const authUser = useAuth();
@@ -20,20 +21,22 @@ const LoginForm = () => {
     {
       username: '',
       password: '',
+      confirmPassword: '',
     }
 }
       validationSchema={SignupSchema}
       onSubmit={async (values) => {
         // eslint-disable-next-line no-empty
         try {
-          const res = await axios.post(routes.loginPath(), values);
+          const res = await axios.post(routes.signupPath(), values);
           authUser.logIn(res.data);
           console.log(res.data);
           navigate('/');
         } catch (err) {
-          if (err.response.status === 401) {
-            console.log('ошибка 401');
+          if (err.response.status === 409) {
+            console.log(err);
           }
+          throw err;
         }
       }}
     >
@@ -47,8 +50,8 @@ const LoginForm = () => {
         isSubmitting,
       }) => (
         <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={handleSubmit}>
-          <h1 className="text-center mb-4">Войти</h1>
-          <div className="form-floating mb-3">
+          <h1 className="text-center mb-4">Регистрация</h1>
+          <div className="form-floating mb-4">
             <input
               className="form-control"
               type="username"
@@ -57,9 +60,9 @@ const LoginForm = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.username}
-              placeholder="Ваш ник"
+              placeholder="Имя пользователя"
             />
-            <label htmlFor="username">Ваш ник</label>
+            <label htmlFor="username">Имя пользователя</label>
             {errors.username && touched.username && errors.username}
           </div>
           <div className="form-floating mb-3">
@@ -76,8 +79,22 @@ const LoginForm = () => {
             <label className="form-label" htmlFor="password">Пароль</label>
             {errors.password && touched.password && errors.password}
           </div>
+          <div className="form-floating mb-4">
+            <input
+              className="form-control"
+              type="confirmPassword"
+              name="confirmPassword"
+              autoComplete="confirmPassword"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.confirmPassword}
+              placeholder="Подтвердите пароль"
+            />
+            <label className="form-label" htmlFor="confirmPassword">Подтвердите пароль</label>
+            {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}
+          </div>
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
-            Войти
+            Зарегистрироваться
           </button>
         </form>
       )}
@@ -85,4 +102,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterFrom;

@@ -1,59 +1,88 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import {
+  React, useRef, useEffect,
+} from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import filter from 'leo-profanity';
 import { Button } from 'react-bootstrap';
+import { useAuth } from '../../contexts/AuthContext';
+import { useSocket } from '../../contexts/SocketContext';
 
-const Messages = () => {
+const Messages = ({ message, currectChannelID, correctChatName }) => {
+  const auth = useAuth();
+  const soc = useSocket();
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [message]);
+
+  useEffect(() => {
+    scrollToBottom();
+  });
   const textSchema = yup.object().shape({
     text: yup.string(),
   });
 
   return (
-    <div className="col p-0 h-100">
-      <div className="d-flex flex-column h-100">
-        <div className="bg-light mb-4 p-3 shadow-sm small">
-          <p className="m-0">
-            <b># general</b>
-          </p>
-          <span className="text-muted">2 сообщения</span>
-        </div>
-        <div id="messages-box" className="chat-messages overflow-auto px-5 ">
-          <div className="text-break mb-2">
-            <b>qwe</b>
-            :
-            vsdfsdfsdf
-          </div>
-          <div className="text-break mb-2">
-            <b>qwe</b>
-            :
-            dfgdfg
-          </div>
-        </div>
-        <div className="mt-auto px-5 py-3">
-          <Formik
-            initialValues={
+    <Formik
+      initialValues={
       {
         text: '',
       }
   }
-            validationSchema={textSchema}
-            onSubmit={async () => {
-            // eslint-disable-next-line no-empty
-              try {
-              } catch (err) {
-                console.log(err);
-              }
-            }}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              isSubmitting,
-            }) => (
+      validationSchema={textSchema}
+      onSubmit={async (values, { resetForm }) => {
+      // eslint-disable-next-line no-empty
+        try {
+          const messageText = filter.clean(values.text);
+          const messageNew = {
+            channelId: currectChannelID,
+            username: auth.getUserName(),
+            text: messageText,
+          };
+          soc.sendNewMessage(messageNew);
+          resetForm();
+        } catch (err) {
+          console.log(err);
+        }
+      }}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting,
+      }) => (
+        <div className="col p-0 h-100">
+          <div className="d-flex flex-column h-100">
+            <div className="bg-light mb-4 p-3 shadow-sm small">
+              <p className="m-0">
+                <b>{`# ${correctChatName}`}</b>
+              </p>
+              <span className="text-muted">сообщений N</span>
+            </div>
+            <div id="messages-box" className="chat-messages overflow-auto px-5 ">
+              <div className="text-break mb-2">
+                {message?.map((item) => (
+                  <div key={item.id} className="text-break mb-2">
+                    <b>{item.username}</b>
+                    :
+                    {' '}
+                    {item.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-auto px-5 py-3">
               <form className="py-1 border rounded-2" onSubmit={handleSubmit}>
                 <div className="input-group has-validation">
                   <input
@@ -73,11 +102,11 @@ const Messages = () => {
                   </Button>
                 </div>
               </form>
-            )}
-          </Formik>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </Formik>
   );
 };
 

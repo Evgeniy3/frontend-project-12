@@ -1,60 +1,50 @@
 /* eslint-disable no-param-reassign */
 import {
   createSlice,
-  createEntityAdapter, // Normalized structure, CRUD reducers, ready selectors form normalize struc.
-  createSelector, // Because included code from the "Reselect" library (memoization feature)
+  createEntityAdapter,
+  createAsyncThunk,
 } from '@reduxjs/toolkit';
+import axios from 'axios';
+import routes from '../routes/routes';
+
+export const getData = createAsyncThunk('channels/getData', async (payload) => {
+  const res = await axios.get(routes.usersPath(), { headers: payload });
+  return res.data;
+});
 
 const channelsAdapter = createEntityAdapter();
+const initialState = {
+  ...channelsAdapter.getInitialState(),
+  id: 1,
+};
 
 const channelsSlice = createSlice({
   name: 'channels',
-  initialState: channelsAdapter.getInitialState(),
+  initialState,
   reducers: {
-    // CRUD reducers from entityAdapter
-    addManyChannels: channelsAdapter.addMany,
-    addChannel: channelsAdapter.addOne,
-    removeChannel: (state, { payload: id }) => {
-      channelsAdapter.removeOne(state, id);
-      if (state.currentChannelId === id) {
-        state.currentChannelId = 1;
-      }
-    },
-    renameChannel: channelsAdapter.upsertOne,
-
-    setCurrentChannelId: (state, { payload }) => {
-      state.currentChannelId = payload;
-    },
-    toggleCurrentChannel: (state, { payload: newId }) => {
-      state.currentChannelId = parseInt(newId, 10);
-    },
+    changeChannelID: (state, { payload }) => ({ ...state, id: payload }),
+    AddChannel: channelsAdapter.addOne,
+    removeChannel: (state, { payload }) => channelsAdapter.removeOne(state, payload.id),
+    renameChannel: (state, { payload }) => channelsAdapter.updateOne(state, {
+      id: payload.id,
+      changes: { name: payload.name },
+    }),
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getData.fulfilled, (state, { payload }) => {
+        const { channels } = payload;
+        console.log(getData);
+        channelsAdapter.setAll(state, channels);
+      });
   },
 });
 
+export const selectors = channelsAdapter.getSelectors((state) => state.channels);
+export const getChannels = (state) => selectors.selectAll(state);
+export const getActiveChannel = (state) => state.channels.id;
+
 export const {
-  removeChannel, addChannel, renameChannel,
-  toggleCurrentChannel, addManyChannels, setCurrentChannelId,
+  AddChannel, removeChannel, renameChannel, changeChannelID,
 } = channelsSlice.actions;
-
 export default channelsSlice.reducer;
-
-export const {
-  selectIds: selectIdsChannels,
-  selectById: selectChannelById,
-  selectEntities: selectEntitiesChannels,
-} = channelsAdapter.getSelectors((state) => state.channels);
-
-export const selectIdCurrentChannel = createSelector(
-  (state) => state,
-  (state) => state.channels.currentChannelId,
-);
-
-export const selectNameSelectedChannel = createSelector(
-  [(state) => state.channels.entities, (state) => state.channels.currentChannelId],
-  (channels, currentId) => channels[currentId]?.name,
-);
-
-export const selectChannelNames = createSelector(
-  [(state) => state.channels.ids, (state) => state.channels.entities],
-  (ids, channels) => ids.map((id) => channels[id].name),
-);

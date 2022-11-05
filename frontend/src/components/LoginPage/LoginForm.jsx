@@ -3,14 +3,16 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import routes from '../../routes/routes';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const LoginForm = () => {
+  const { t } = useTranslation();
   const SignupSchema = yup.object().shape({
-    username: yup.string().required('Обязательное поле'),
-    password: yup.string().required('Обязательное поле'),
+    username: yup.string().required(t('loginPage.required')),
+    password: yup.string().required(t('loginPage.required')),
   });
   const navigate = useNavigate();
   const authUser = useAuth();
@@ -47,7 +49,7 @@ const LoginForm = () => {
         isSubmitting,
       }) => (
         <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={handleSubmit}>
-          <h1 className="text-center mb-4">Войти</h1>
+          <h1 className="text-center mb-4">{t('loginPage.enter')}</h1>
           <div className="form-floating mb-3">
             <input
               className="form-control"
@@ -57,9 +59,9 @@ const LoginForm = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.username}
-              placeholder="Ваш ник"
+              placeholder={t('loginPage.username')}
             />
-            <label htmlFor="username">Ваш ник</label>
+            <label htmlFor="username">{t('loginPage.username')}</label>
             {errors.username && touched.username && errors.username}
           </div>
           <div className="form-floating mb-3">
@@ -67,17 +69,17 @@ const LoginForm = () => {
               className="form-control"
               type="password"
               name="password"
-              autoComplete="username"
+              autoComplete="password"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.password}
-              placeholder="Пароль"
+              placeholder={t('loginPage.password')}
             />
-            <label className="form-label" htmlFor="password">Пароль</label>
+            <label className="form-label" htmlFor="password">{t('loginPage.password')}</label>
             {errors.password && touched.password && errors.password}
           </div>
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
-            Войти
+            {t('loginPage.enter')}
           </button>
         </form>
       )}

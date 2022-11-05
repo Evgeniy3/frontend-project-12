@@ -3,6 +3,7 @@ import {
   React, useRef, useEffect,
 } from 'react';
 import { Formik } from 'formik';
+import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import filter from 'leo-profanity';
 import { Button } from 'react-bootstrap';
@@ -10,6 +11,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useSocket } from '../../contexts/SocketContext';
 
 const Messages = ({ message, currectChannelID, correctChatName }) => {
+  const { t } = useTranslation();
   const auth = useAuth();
   const soc = useSocket();
   const messagesEndRef = useRef(null);
@@ -49,7 +51,7 @@ const Messages = ({ message, currectChannelID, correctChatName }) => {
           soc.sendNewMessage(messageNew);
           resetForm();
         } catch (err) {
-          console.log(err);
+          console.log(err.message);
         }
       }}
     >
@@ -68,7 +70,7 @@ const Messages = ({ message, currectChannelID, correctChatName }) => {
               <p className="m-0">
                 <b>{`# ${correctChatName}`}</b>
               </p>
-              <span className="text-muted">сообщений N</span>
+              <span className="text-muted">{t('messagesQuantity.counter.count', { count: message.length })}</span>
             </div>
             <div id="messages-box" className="chat-messages overflow-auto px-5 ">
               <div className="text-break mb-2">
@@ -92,7 +94,7 @@ const Messages = ({ message, currectChannelID, correctChatName }) => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.text}
-                    placeholder="Введите сообщение..."
+                    placeholder={t('messageForm')}
                   />
                   {errors.text && touched.text && errors.text}
                   <Button variant="light" type="submit" className="btn btn-group-vertical" disabled={isSubmitting}>

@@ -2,16 +2,18 @@
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import routes from '../../routes/routes';
 import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const RegisterFrom = () => {
+  const { t } = useTranslation();
   const SignupSchema = yup.object().shape({
-    username: yup.string().required('Обязательное поле').min(3, 'От 3 до 20 символов').max(20, 'От 3 до 20 символов'),
-    password: yup.string().required('Обязательное поле').min(6, 'Не менее 6 символов'),
-    confirmPassword: yup.string().required('Обязательное поле').oneOf([yup.ref('password'), null], 'Пароли должны совпадать'),
+    username: yup.string().required(t('signUpPage.required')).min(3, t('signUpPage.usernameLenght')).max(20, t('signUpPage.usernameLenght')),
+    password: yup.string().required(t('signUpPage.required')).min(6, t('signUpPage.minPasswordLenght')),
+    confirmPassword: yup.string().required(t('signUpPage.required')).oneOf([yup.ref('password'), null], t('signUpPage.passwordConErr')),
   });
   const navigate = useNavigate();
   const authUser = useAuth();
@@ -50,7 +52,7 @@ const RegisterFrom = () => {
         isSubmitting,
       }) => (
         <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={handleSubmit}>
-          <h1 className="text-center mb-4">Регистрация</h1>
+          <h1 className="text-center mb-4">{t('signUpPage.title')}</h1>
           <div className="form-floating mb-4">
             <input
               className="form-control"
@@ -60,9 +62,9 @@ const RegisterFrom = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.username}
-              placeholder="Имя пользователя"
+              placeholder={t('signUpPage.username')}
             />
-            <label htmlFor="username">Имя пользователя</label>
+            <label htmlFor="username">{t('signUpPage.username')}</label>
             {errors.username && touched.username && errors.username}
           </div>
           <div className="form-floating mb-3">
@@ -74,9 +76,9 @@ const RegisterFrom = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.password}
-              placeholder="Пароль"
+              placeholder={t('signUpPage.password')}
             />
-            <label className="form-label" htmlFor="password">Пароль</label>
+            <label className="form-label" htmlFor="password">{t('signUpPage.password')}</label>
             {errors.password && touched.password && errors.password}
           </div>
           <div className="form-floating mb-4">
@@ -88,13 +90,13 @@ const RegisterFrom = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.confirmPassword}
-              placeholder="Подтвердите пароль"
+              placeholder={t('signUpPage.confirmPassword')}
             />
-            <label className="form-label" htmlFor="confirmPassword">Подтвердите пароль</label>
+            <label className="form-label" htmlFor="confirmPassword">{t('signUpPage.confirmPassword')}</label>
             {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}
           </div>
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
-            Зарегистрироваться
+            {t('signUpPage.signUp')}
           </button>
         </form>
       )}

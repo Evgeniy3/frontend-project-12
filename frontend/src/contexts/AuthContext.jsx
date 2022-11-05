@@ -1,11 +1,12 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext({});
 
-// eslint-disable-next-line import/prefer-default-export
 export const AuthProvider = ({ children }) => {
   const userLog = JSON.parse(localStorage.getItem('userId'));
   const [loggedIn, setLoggedIn] = useState(userLog ? { username: userLog.username } : null);
+
   const logIn = (data) => {
     localStorage.setItem('userId', JSON.stringify(data));
     setLoggedIn({ username: data.username });
@@ -16,14 +17,6 @@ export const AuthProvider = ({ children }) => {
     setLoggedIn(null);
   };
 
-  const getAuthToken = () => {
-    const currentUser = userLog;
-    if (currentUser && currentUser.token) {
-      return { Authorization: `Basic ${currentUser.token}` };
-    }
-    return {};
-  };
-
   const getUserName = () => {
     if (userLog) {
       return userLog.username;
@@ -31,10 +24,17 @@ export const AuthProvider = ({ children }) => {
     return null;
   };
 
+  const getAuthToken = () => {
+    const currentUser = userLog;
+    if (currentUser && currentUser.token) {
+      return { Authorization: `Bearer ${currentUser.token}` };
+    }
+    return {};
+  };
+
   return (
-    // eslint-disable-next-line react/jsx-no-constructed-context-values
     <AuthContext.Provider value={{
-      loggedIn, logIn, logOut, getAuthToken, getUserName, userLog,
+      loggedIn, logIn, logOut, getUserName, getAuthToken, userLog,
     }}
     >
       {children}

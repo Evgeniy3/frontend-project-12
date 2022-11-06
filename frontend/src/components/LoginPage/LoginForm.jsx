@@ -7,9 +7,11 @@ import { useTranslation } from 'react-i18next';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import routes from '../../routes/routes';
 import { useAuth } from '../../contexts/AuthContext.jsx';
+import { useToastify } from '../../contexts/ToastifyContext';
 
 const LoginForm = () => {
   const { t } = useTranslation();
+  const { errorToast } = useToastify();
   const SignupSchema = yup.object().shape({
     username: yup.string().required(t('loginPage.required')),
     password: yup.string().required(t('loginPage.required')),
@@ -35,6 +37,8 @@ const LoginForm = () => {
         } catch (err) {
           if (err.response.status === 401) {
             console.log('ошибка 401');
+          } else if (err.message === 'Network Error') {
+            errorToast(t('errorNetwork'));
           }
         }
       }}

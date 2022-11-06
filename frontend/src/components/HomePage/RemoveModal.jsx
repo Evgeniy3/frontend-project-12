@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../../slices/modalSlice';
 import { selectors, changeChannelID } from '../../slices/channelsSlice';
 import { useSocket } from '../../contexts/SocketContext';
+import { useToastify } from '../../contexts/ToastifyContext';
 
 const RemoveModal = ({ currectChannelID }) => {
+  const { successToast } = useToastify();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const soc = useSocket();
@@ -16,6 +18,7 @@ const RemoveModal = ({ currectChannelID }) => {
   const handleRemove = () => {
     soc.deleteChannel(currentChannel);
     dispatch(closeModal());
+    successToast(t('removeChannelToast'));
     if (currectChannelID === currentChannel.id) {
       dispatch(changeChannelID(startChannelId));
     }

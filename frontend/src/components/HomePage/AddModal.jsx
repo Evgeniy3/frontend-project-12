@@ -11,8 +11,10 @@ import { closeModal } from '../../slices/modalSlice';
 import { selectors } from '../../slices/channelsSlice';
 import { useSocket } from '../../contexts/SocketContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToastify } from '../../contexts/ToastifyContext';
 
 const AddModal = () => {
+  const { successToast } = useToastify();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const auth = useAuth();
@@ -44,6 +46,7 @@ const AddModal = () => {
             id: _.uniqueId(), name: values.nameChannel, author: auth.getUserName(), removable: true,
           };
           soc.addNewChannel(newChannel);
+          successToast(t('addChannelToast'));
           dispatch(closeModal());
         } catch (err) {
           setFormValid(false);

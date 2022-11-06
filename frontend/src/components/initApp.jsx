@@ -9,6 +9,7 @@ import RegisterPage from './RegisterPage/RegisterPage';
 import NotFoundPage from './NotFoundPage';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { SocketProvider } from '../contexts/SocketContext';
+import { ToastifyProvider } from '../contexts/ToastifyContext';
 
 const ChatRoute = ({ children }) => {
   const auth = useAuth();
@@ -26,23 +27,25 @@ const LoggedInRouter = () => {
 
 const AppInit = ({ socket }) => (
   <SocketProvider value={{ socket }}>
-    <AuthProvider>
-      <div className="d-flex flex-column h-100">
-        <BrowserRouter>
-          <Nav />
-          <Routes>
-            <Route path="/login" element={<LoggedInRouter />}>
-              <Route path="" element={<LoginPage />} />
-            </Route>
-            <Route path="/signup" element={<LoggedInRouter />}>
-              <Route path="" element={<RegisterPage />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-            <Route path="/" element={<ChatRoute><HomePage /></ChatRoute>} />
-          </Routes>
-        </BrowserRouter>
-      </div>
-    </AuthProvider>
+    <ToastifyProvider>
+      <AuthProvider>
+        <div className="d-flex flex-column h-100">
+          <BrowserRouter>
+            <Nav />
+            <Routes>
+              <Route path="/login" element={<LoggedInRouter />}>
+                <Route path="" element={<LoginPage />} />
+              </Route>
+              <Route path="/signup" element={<LoggedInRouter />}>
+                <Route path="" element={<RegisterPage />} />
+              </Route>
+              <Route path="*" element={<NotFoundPage />} />
+              <Route path="/" element={<ChatRoute><HomePage /></ChatRoute>} />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </AuthProvider>
+    </ToastifyProvider>
   </SocketProvider>
 );
 

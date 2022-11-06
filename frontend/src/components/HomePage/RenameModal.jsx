@@ -9,8 +9,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../../slices/modalSlice';
 import { selectors } from '../../slices/channelsSlice';
 import { useSocket } from '../../contexts/SocketContext';
+import { useToastify } from '../../contexts/ToastifyContext';
 
 const RenameModal = () => {
+  const { successToast } = useToastify();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const soc = useSocket();
@@ -43,7 +45,9 @@ const RenameModal = () => {
           soc.fnRenameChannel({ id, name: renameChannel });
           setFormValid(true);
           dispatch(closeModal());
+          successToast(t('renameChannelToast'));
         } catch (err) {
+          console.log(err.message);
           setFormValid(false);
         }
       }}

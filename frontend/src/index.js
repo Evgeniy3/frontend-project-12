@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { io } from 'socket.io-client';
-import './index.css';
 import App from './App';
 import 'react-toastify/dist/ReactToastify.css';
 

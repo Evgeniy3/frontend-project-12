@@ -1,4 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import {
+  React, useState,
+} from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -10,6 +13,7 @@ import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const RegisterFrom = () => {
   const { t } = useTranslation();
+  const [authFailed, setAuthFailed] = useState(false);
   const SignupSchema = yup.object().shape({
     username: yup.string().required(t('signUpPage.required')).min(3, t('signUpPage.usernameLenght')).max(20, t('signUpPage.usernameLenght')),
     password: yup.string().required(t('signUpPage.required')).min(6, t('signUpPage.minPasswordLenght')),
@@ -32,10 +36,12 @@ const RegisterFrom = () => {
         try {
           const res = await axios.post(routes.signupPath(), values);
           authUser.logIn(res.data);
+          setAuthFailed(false);
           console.log(res.data);
           navigate('/');
         } catch (err) {
           if (err.response.status === 409) {
+            setAuthFailed(true);
             console.log(err);
           }
           throw err;
@@ -93,7 +99,7 @@ const RegisterFrom = () => {
               placeholder={t('signUpPage.confirmPassword')}
             />
             <label className="form-label" htmlFor="confirmPassword">{t('signUpPage.confirmPassword')}</label>
-            {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}
+            {authFailed ? t('signUpPage.authFailed') : errors.confirmPassword}
           </div>
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
             {t('signUpPage.signUp')}

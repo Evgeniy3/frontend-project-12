@@ -28,7 +28,7 @@ const Messages = ({ message, currectChannelID, correctChatName }) => {
     scrollToBottom();
   });
   const textSchema = yup.object().shape({
-    text: yup.string(),
+    text: yup.string().required(''),
   });
 
   return (

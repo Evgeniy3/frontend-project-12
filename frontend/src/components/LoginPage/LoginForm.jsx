@@ -1,4 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import {
+  React, useState,
+} from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -10,6 +13,7 @@ import { useAuth } from '../../contexts/AuthContext.jsx';
 import { useToastify } from '../../contexts/ToastifyContext';
 
 const LoginForm = () => {
+  const [authFailed, setAuthFailed] = useState(false);
   const { t } = useTranslation();
   const { errorToast } = useToastify();
   const SignupSchema = yup.object().shape({
@@ -32,10 +36,12 @@ const LoginForm = () => {
         try {
           const res = await axios.post(routes.loginPath(), values);
           authUser.logIn(res.data);
+          setAuthFailed(false);
           console.log(res.data);
           navigate('/');
         } catch (err) {
           if (err.response.status === 401) {
+            setAuthFailed(true);
             console.log('ошибка 401');
           } else if (err.message === 'Network Error') {
             errorToast(t('errorNetwork'));
@@ -81,6 +87,7 @@ const LoginForm = () => {
             />
             <label className="form-label" htmlFor="password">{t('loginPage.password')}</label>
             {errors.password && touched.password && errors.password}
+            {authFailed ? t('loginPage.noValid') : errors.password}
           </div>
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
             {t('loginPage.enter')}

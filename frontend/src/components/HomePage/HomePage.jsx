@@ -25,6 +25,8 @@ const HomePage = () => {
   const forrectMessage = dataMessages.filter((item) => item.channelId === dataСurrentID);
   const correctChat = dataChannels.filter((item) => item.id === dataСurrentID);
   const correctChatName = correctChat[0]?.name;
+  // eslint-disable-next-line no-debugger
+  debugger;
   return (
     <div className="container h-100 my-4 overflow-hidden rounded shadow">
       <div className="row h-100 bg-white flex-md-row">

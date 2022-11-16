@@ -18,7 +18,10 @@ const Channels = ({ channels, currectChannelID }) => {
   const changeCurrentID = (id) => {
     dispatch(changeChannelID(id));
   };
-
+  // eslint-disable-next-line consistent-return
+  // const activeChannel = () => {
+  //   if (currectChannelID === 1) return currectChannelID;
+  // };
   return (
     <div className="col-4 col-md-2 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">

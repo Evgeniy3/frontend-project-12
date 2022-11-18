@@ -79,6 +79,7 @@ const RenameModal = () => {
                   className="mb-2"
                 />
                 <Form.Label className="visually-hidden">{t('modal.name')}</Form.Label>
+                <Form.Label className="visually-hidden">{t('modal.channelManagement')}</Form.Label>
                 <Form.Control.Feedback type="invalid" tooltip placement="right">
                   {errors.renameChannel ? errors.renameChannel : null}
                 </Form.Control.Feedback>

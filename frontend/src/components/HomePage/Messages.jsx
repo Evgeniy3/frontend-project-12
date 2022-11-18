@@ -92,6 +92,7 @@ const Messages = ({ message, currectChannelID, correctChatName }) => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.text}
+                    aria-label="Новое сообщение"
                     placeholder={t('messageForm')}
                   />
                   {errors.text && touched.text && errors.text}

@@ -25,10 +25,12 @@ const channelsSlice = createSlice({
     changeChannelID: (state, { payload }) => ({ ...state, id: payload }),
     AddChannel: channelsAdapter.addOne,
     removeChannel: (state, { payload }) => {
-      if (state.getActiveChannel === payload.id) {
-        state.getActiveChannel = 1;
+      if (state.currentChannel === payload.id) {
+        state.currentChannel = 1;
       }
       channelsAdapter.removeOne(state, payload.id);
+      // eslint-disable-next-line no-debugger
+      debugger;
     },
     renameChannel: (state, { payload }) => channelsAdapter.updateOne(state, {
       id: payload.id,
@@ -38,9 +40,9 @@ const channelsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getData.fulfilled, (state, { payload }) => {
-        const { channels } = payload;
-        console.log(getData);
+        const { channels, currentChannelId } = payload;
         channelsAdapter.setAll(state, channels);
+        state.currentChannel = currentChannelId;
       });
   },
 });

@@ -4,7 +4,9 @@ import {
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Form, Button, Modal } from 'react-bootstrap';
+import {
+  FloatingLabel, Form, Button, Modal,
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../../slices/modalSlice';
 import { selectors } from '../../slices/channelsSlice';
@@ -69,21 +71,24 @@ const RenameModal = () => {
           <Modal.Body>
             <Form onSubmit={handleSubmit}>
               <Form.Group>
-                <Form.Control
-                  value={values.renameChannel}
-                  ref={inputRef}
-                  data-testid="input-name"
-                  name="renameChannel"
-                  onChange={handleChange}
-                  isInvalid={!!errors.renameChannel}
-                  className="mb-2"
-                  placeholder={t('modal.name')}
-                />
-                <Form.Label className="visually-hidden">{t('modal.name')}</Form.Label>
-                <Form.Control.Feedback type="invalid" tooltip placement="right">
-                  {errors.renameChannel ? errors.renameChannel : null}
-                </Form.Control.Feedback>
-                <div className="invalid-fb">{t(validationError)}</div>
+                <FloatingLabel
+                  controlId="renameChannel"
+                  label={t('modal.name')}
+                >
+                  <Form.Control
+                    value={values.renameChannel}
+                    ref={inputRef}
+                    data-testid="input-name"
+                    name="renameChannel"
+                    onChange={handleChange}
+                    isInvalid={!!errors.renameChannel}
+                    className="mb-2"
+                  />
+                  <Form.Control.Feedback type="invalid" tooltip placement="right">
+                    {errors.renameChannel ? errors.renameChannel : null}
+                  </Form.Control.Feedback>
+                  <div className="invalid-fb">{t(validationError)}</div>
+                </FloatingLabel>
               </Form.Group>
               <div className="d-flex justify-content-end">
                 <Button onClick={() => dispatch(closeModal())} className="me-2" variant="secondary">{t('modal.cancelButton')}</Button>

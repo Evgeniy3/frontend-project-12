@@ -71,6 +71,7 @@ const AddModal = () => {
             <Modal.Body>
               <input
                 className={formValid ? 'form-control mb-2' : 'form-control is-invalid mb-2'}
+                id="nameChannel"
                 type="nameChannel"
                 name="nameChannel"
                 onChange={handleChange}
@@ -78,6 +79,7 @@ const AddModal = () => {
                 value={values.nameChannel}
                 placeholder={t('modal.name')}
               />
+              <label className="visually-hidden" htmlFor="nameChannel">{t('modal.name')}</label>
               {errors.nameChannel && touched.nameChannel && errors.nameChannel}
               <div className="d-flex justify-content-end">
                 <Button onClick={() => dispatch(closeModal())} className="me-2" variant="secondary" disabled={isSubmitting}>

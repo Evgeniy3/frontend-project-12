@@ -77,6 +77,7 @@ const RenameModal = () => {
                   onChange={handleChange}
                   isInvalid={!!errors.renameChannel}
                   className="mb-2"
+                  placeholder={t('modal.name')}
                 />
                 <Form.Label className="visually-hidden">{t('modal.name')}</Form.Label>
                 <Form.Control.Feedback type="invalid" tooltip placement="right">

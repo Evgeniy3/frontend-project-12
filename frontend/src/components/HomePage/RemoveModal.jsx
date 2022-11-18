@@ -1,4 +1,7 @@
 /* eslint-disable max-len */
+import {
+  React,
+} from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';

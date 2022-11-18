@@ -1,3 +1,6 @@
+import {
+  React,
+} from 'react';
 import Image from 'react-bootstrap/Image';
 import { useTranslation } from 'react-i18next';
 import imageNotFound from '../assets/404-page.svg';

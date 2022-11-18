@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import { createContext, useContext } from 'react';
+import { React, createContext, useContext } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
 const ToastifyContext = createContext({});

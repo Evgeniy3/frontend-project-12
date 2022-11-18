@@ -1,5 +1,7 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import { createContext, useContext, useState } from 'react';
+import {
+  React, createContext, useContext, useState,
+} from 'react';
 
 const AuthContext = createContext({});
 

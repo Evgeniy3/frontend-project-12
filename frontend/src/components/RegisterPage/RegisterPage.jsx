@@ -1,3 +1,6 @@
+import {
+  React,
+} from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
 import imageAvatarSg from '../../assets/avatar_signup.jpg';
 import RegisterForm from './RegisterForm';

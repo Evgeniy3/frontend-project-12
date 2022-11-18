@@ -3,6 +3,7 @@ import {
   React, useState,
 } from 'react';
 import { Formik } from 'formik';
+import { Button, Form } from 'react-bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -55,55 +56,66 @@ const RegisterFrom = () => {
         handleChange,
         handleBlur,
         handleSubmit,
-        isSubmitting,
       }) => (
-        <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={handleSubmit}>
-          <h1 className="text-center mb-4">{t('signUpPage.title')}</h1>
-          <div className="form-floating mb-4">
-            <input
-              className="form-control"
-              type="username"
-              name="username"
+        <form className="w-50" onSubmit={handleSubmit}>
+          <h1 className="text-center mb-4 sign-text">{t('signUpPage.title')}</h1>
+          <Form.Group className="form-floating mb-3">
+            <Form.Control
+              required
+              placeholder={t('signUpPage.username')}
+              isInvalid={(errors.username && touched.username) || authFailed}
               autoComplete="username"
+              id="username"
+              type="text"
+              name="username"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.username}
-              placeholder={t('signUpPage.username')}
             />
-            <label htmlFor="username">{t('signUpPage.username')}</label>
-            {errors.username && touched.username && errors.username}
-          </div>
-          <div className="form-floating mb-3">
-            <input
-              className="form-control"
+            <Form.Label htmlFor="username">{t('signUpPage.username')}</Form.Label>
+            <Form.Control.Feedback type="invalid" tooltip placement="right">
+              {errors.username}
+            </Form.Control.Feedback>
+
+          </Form.Group>
+          <Form.Group className="form-floating mb-3">
+            <Form.Control
+              placeholder={t('signUpPage.password')}
+              required
+              autoComplete="new-password"
+              id="password"
               type="password"
               name="password"
-              autoComplete="username"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.password}
-              placeholder={t('signUpPage.password')}
+              isInvalid={(errors.password && touched.password) || authFailed}
             />
-            <label className="form-label" htmlFor="password">{t('signUpPage.password')}</label>
-            {errors.password && touched.password && errors.password}
-          </div>
-          <div className="form-floating mb-4">
-            <input
-              className="form-control"
-              type="confirmPassword"
-              name="confirmPassword"
-              autoComplete="confirmPassword"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.confirmPassword}
+            <Form.Label htmlFor="password">{t('signUpPage.password')}</Form.Label>
+            <Form.Control.Feedback type="invalid" tooltip placement="right">
+              {errors.password}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Form.Group className="form-floating mb-4">
+            <Form.Control
+              autoComplete="new-password"
               placeholder={t('signUpPage.confirmPassword')}
+              type="password"
+              required
+              id="confirmPassword"
+              name="confirmPassword"
+              onChange={handleChange}
+              value={values.confirmPassword}
+              isInvalid={errors.confirmPassword || authFailed}
             />
-            <label className="form-label" htmlFor="confirmPassword">{t('signUpPage.confirmPassword')}</label>
-            {authFailed ? t('signUpPage.authFailed') : errors.confirmPassword}
-          </div>
-          <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
+            <Form.Label htmlFor="confirmPassword">{t('signUpPage.confirmPassword')}</Form.Label>
+            <Form.Control.Feedback type="invalid" tooltip placement="right">
+              {authFailed ? t('signUpPage.authFailed') : errors.confirmPassword}
+            </Form.Control.Feedback>
+          </Form.Group>
+          <Button type="submit" className="w-100 mb-3">
             {t('signUpPage.signUp')}
-          </button>
+          </Button>
         </form>
       )}
     </Formik>

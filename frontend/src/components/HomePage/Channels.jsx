@@ -48,7 +48,7 @@ const Channels = ({ channels, currectChannelID }) => {
                 && (
                   <Dropdown>
                     <Dropdown.Toggle id="dropdown-basic" className={item.id === currectChannelID ? activeClassButton : classBtnGroup}>
-                      <span className="visually-hidden">{t('channelManagement')}</span>
+                      <span className="visually-hidden">{t('modal.channelManagement')}</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item onClick={() => dispatch(openModal({ type: 'removing', itemId: item.id }))} variant="light" eventKey="1">{t('modal.removeChannel')}</Dropdown.Item>

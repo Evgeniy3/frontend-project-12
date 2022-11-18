@@ -1,10 +1,10 @@
 import {
-  React, useState,
+  React, useState, useEffect, useRef,
 } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Button, Modal } from 'react-bootstrap';
+import { Form, Button, Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeModal } from '../../slices/modalSlice';
 import { selectors } from '../../slices/channelsSlice';
@@ -14,6 +14,7 @@ import { useToastify } from '../../contexts/ToastifyContext';
 const RenameModal = () => {
   const { successToast } = useToastify();
   const { t } = useTranslation();
+  const inputRef = useRef();
   const dispatch = useDispatch();
   const soc = useSocket();
   const { item } = useSelector((store) => store.modal);
@@ -21,7 +22,10 @@ const RenameModal = () => {
   const namesChannels = allChannels.map((it) => it.name);
   const currentChannel = allChannels.find((it) => it.id === item);
   const { id, name } = currentChannel;
-  const [formValid, setFormValid] = useState(true);
+  const [validationError, setValidationError] = useState('');
+  useEffect(() => {
+    inputRef.current.select();
+  }, []);
   const validateRename = yup.object().shape({
     renameChannel: yup
       .string()
@@ -43,51 +47,50 @@ const RenameModal = () => {
         try {
           const { renameChannel } = values;
           soc.fnRenameChannel({ id, name: renameChannel });
-          setFormValid(true);
+          setValidationError(null);
+
           dispatch(closeModal());
           successToast(t('renameChannelToast'));
         } catch (err) {
-          console.log(err.message);
-          setFormValid(false);
+          setValidationError(err.message);
         }
       }}
     >
       {({
         values,
         errors,
-        touched,
         handleChange,
-        handleBlur,
         handleSubmit,
-        isSubmitting,
       }) => (
-        <form className="py-1 border rounded-2" onSubmit={handleSubmit}>
-          <Modal centered show onHide={() => dispatch(closeModal())}>
-            <Modal.Header closeButton>
-              <Modal.Title>{t('modal.renameChannel')}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <input
-                className={formValid ? 'form-control mb-2' : 'form-control is-invalid mb-2'}
-                type="renameChannel"
-                name="renameChannel"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.renameChannel}
-                placeholder={t('modal.name')}
-              />
-              {errors.renameChannel && touched.renameChannel && errors.renameChannel}
+        <Modal centered show onHide={() => dispatch(closeModal())}>
+          <Modal.Header closeButton>
+            <Modal.Title>{t('modal.renameChannel')}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group>
+                <Form.Control
+                  value={values.renameChannel}
+                  ref={inputRef}
+                  data-testid="input-name"
+                  name="renameChannel"
+                  onChange={handleChange}
+                  isInvalid={!!errors.renameChannel}
+                  className="mb-2"
+                />
+                <Form.Label className="visually-hidden">{t('modal.name')}</Form.Label>
+                <Form.Control.Feedback type="invalid" tooltip placement="right">
+                  {errors.renameChannel ? errors.renameChannel : null}
+                </Form.Control.Feedback>
+                <div className="invalid-fb">{t(validationError)}</div>
+              </Form.Group>
               <div className="d-flex justify-content-end">
-                <Button onClick={() => dispatch(closeModal())} className="me-2" variant="secondary" disabled={isSubmitting}>
-                  {t('modal.cancelButton')}
-                </Button>
-                <Button onClick={handleSubmit} type="submit" variant="primary" disabled={isSubmitting}>
-                  {t('modal.addButton')}
-                </Button>
+                <Button onClick={() => dispatch(closeModal())} className="me-2" variant="secondary">{t('modal.cancelButton')}</Button>
+                <Button onClick={handleSubmit} type="submit" variant="primary">{t('modal.addButton')}</Button>
               </div>
-            </Modal.Body>
-          </Modal>
-        </form>
+            </Form>
+          </Modal.Body>
+        </Modal>
       )}
     </Formik>
   );

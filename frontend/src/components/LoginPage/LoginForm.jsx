@@ -87,7 +87,7 @@ const LoginForm = () => {
             />
             <label className="form-label" htmlFor="password">{t('loginPage.password')}</label>
             {errors.password && touched.password && errors.password}
-            {authFailed ? t('loginPage.noValid') : errors.password}
+            { authFailed && t('loginPage.noValid') }
           </div>
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
             {t('loginPage.enter')}

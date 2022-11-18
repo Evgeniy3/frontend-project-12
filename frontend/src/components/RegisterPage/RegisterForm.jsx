@@ -99,8 +99,7 @@ const RegisterFrom = () => {
               placeholder={t('signUpPage.confirmPassword')}
             />
             <label className="form-label" htmlFor="confirmPassword">{t('signUpPage.confirmPassword')}</label>
-            {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}
-            { authFailed && t('signUpPage.authFailed') }
+            {authFailed ? t('signUpPage.authFailed') : errors.confirmPassword}
           </div>
           <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={isSubmitting}>
             {t('signUpPage.signUp')}

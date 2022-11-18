@@ -17,7 +17,7 @@ const RegisterFrom = () => {
   const SignupSchema = yup.object().shape({
     username: yup.string().required(t('signUpPage.required')).min(3, t('signUpPage.usernameLenght')).max(20, t('signUpPage.usernameLenght')),
     password: yup.string().required(t('signUpPage.required')).min(6, t('signUpPage.minPasswordLenght')),
-    confirmPassword: yup.string().required(t('signUpPage.required')).oneOf([yup.ref('password'), null], t('signUpPage.passwordConErr')),
+    confirmPassword: yup.string().oneOf([yup.ref('password'), null], t('signUpPage.passwordConErr')),
   });
   const navigate = useNavigate();
   const authUser = useAuth();
